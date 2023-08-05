@@ -5,4 +5,4 @@
 
 update new .env file with correct info
 
-`npm run server-dev`
+`npm run dev`
