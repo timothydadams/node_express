@@ -14,7 +14,6 @@ export const get_one = async (req, res, next) => {
 export const get_all = async (req, res, next) => {
   try {
     const result = await services.getAllWithCount(req.query.page);
-    //console.log('lookup results',result);
     res.json(result);
   } catch (err) {
       winstonLogger.error(`Error getting all records`, err.message);
