@@ -21,7 +21,7 @@ describe("Users", () => {
       
         before(async function () {
           response = await supertest(app).post("/api/users").send(testUser);
-          createdUser = response.body;
+          createdUser = response.body.user;
         });
       
         it("is expected to respond with status 200", async function () {
@@ -29,11 +29,11 @@ describe("Users", () => {
         });
     
         it("is expected to return a user object", async function () {
-          expect(response.body).to.be.an("object");
+          expect(response.body.user).to.be.an("object");
         });
       
         it("is expected that the response body contains an id property", async function() {
-          expect(response.body).to.have.a.property("id");
+          expect(response.body.user).to.have.a.property("id");
         });
       
     });
@@ -71,11 +71,11 @@ describe("Users", () => {
         });
       
         it("is expected to return a user object", async function() {
-            expect(response.body).to.be.an("object");
+            expect(response.body).to.have.a.property("user");
         });
         
         it("is expected that the response body contains an id property", async function() {
-            expect(response.body).to.have.a.property("id");
+            expect(response.body.user).to.have.a.property("id");
         });
       
     });
@@ -117,26 +117,39 @@ describe("Users", () => {
         });
       
         it("is expected to return a user object", async function() {
-            expect(response.body).to.be.an("object");
+            expect(response.body.user).to.be.an("object");
         });
         
         it("is expected that the response body contains an id property", async function() {
-            expect(response.body).to.have.a.property("id");
+            expect(response.body.user).to.have.a.property("id");
         });
 
         it('is expected that user firstName is different', async function () {
-            expect(response.body.firstName).to.not.equal(testUser["firstName"]);
+            expect(response.body.user.firstName).to.not.equal(testUser["firstName"]);
         });
 
         it('is expected that user firstName is now "Jerry"', async function() {
-            expect(response.body.firstName).to.equal("Jerry");
+            expect(response.body.user.firstName).to.equal("Jerry");
         });
 
         it('is expected that user lastName is unchanged', async function() {
-            expect(response.body.lastName).to.equal(testUser["lastName"]);
+            expect(response.body.user.lastName).to.equal(testUser["lastName"]);
         });
       
     });
+
+    describe("DELETE /api/users/:id", async function () {
+        let response;
+      
+        before(async () => {
+          response = await supertest(app).delete(`/api/users/${createdUser['id']}`);
+        });
+
+        it("is expected to respond with status 200", async function () {
+            expect(response.status).to.equal(200);
+        });
+
+    })
 
 });
 

@@ -24,7 +24,14 @@ export const get_all = async (req, res, next) => {
 
 export const create = async (req, res, next) => {
   try {
-    res.json(await services.create(req.body));
+    const {user, error} = await services.create(req.body);
+
+    if (error) {
+      res.status(400).json({error});
+    } else {
+      res.json({user});
+    }
+    
   } catch (err) {
     winstonLogger.error(`Error creating record`, err.message);
     next(err);
@@ -33,11 +40,12 @@ export const create = async (req, res, next) => {
 
 export const update = async (req, res, next) => {
   try {
-    res.json( await services.update(req.params.id, req.body) );
-    //res.json(result);
-    //result.error === undefined
-    //  ? res.json(result)
-    //  : res.status(204).send();
+    const {user, error} =  await services.update(req.params.id, req.body);
+    if (error) {
+      res.status(400).json({error});
+    } else {
+      res.json({user});
+    }
   } catch (err) {
     winstonLogger.error(`Error updating record`, err.message);
     next(err);

@@ -11,11 +11,11 @@ export const getById = async (id) => {
   loggingEnabled && winstonLogger.info(JSON.stringify(res));
 
   if (res) {
-    return res;
+    return {user:res};
   } else {
     return {error:{message:"failed to retrieve user"}};
   }
-  
+
 }
 
 export const getAllWithCount = async (page = 1) => {
@@ -37,12 +37,17 @@ export const create = async ({
   firstName,
   lastName,
 }) => {
+
+  if (!firstName) return {error: {message: `firstName cannot be null`}};
+  if (!lastName) return {error: {message: `lastName cannot be null`}};
+
   const res = await Users.create({
     firstName,
     lastName,
   });
   loggingEnabled && winstonLogger.info(JSON.stringify(res));
-  return res;
+
+  return {user:res};
 }
 
 export const update = async (id, {
@@ -56,18 +61,27 @@ export const update = async (id, {
 
   if (resval === 1) {
     loggingEnabled && winstonLogger.info(`updated user ${id}`);
-    let updatedUser = Users.findByPk(id);
-    return updatedUser;
+    let updatedUser = await Users.findByPk(id);
+    return {user:updatedUser};
   } else {
     winstonLogger.info(`error updating user ${id}`);
-    return {"error":{"message": "update failed, user does not exist"}};
+    return {error:{message: "update failed, user does not exist"}};
   }
 }
 
 export const remove = async (id) => {
+
   const res = await Users.destroy({
     where:{id},
-  })
-  loggingEnabled && winstonLogger.info(JSON.stringify(res));
-  return res;
+  });
+
+  let returnObj = {};
+
+  if (res === 1 ) {
+    returnObj["message"] = `user ${id} deleted`;
+  } else {
+    returnObj["error"] = {message: 'delete failed'}
+  }
+  loggingEnabled && winstonLogger.info(JSON.stringify(returnObj));
+  return returnObj;
 }
