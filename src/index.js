@@ -2,7 +2,8 @@
 import express from 'express';
 import winstonLogger, { morganLogger } from './middleware/logging.middleware.js';
 import { sequelize } from './configs/db.config.js';
-import { testRouter } from './routes/test.route.js';
+//import { usersRouter } from './routes/users.route.js';
+import router from './routes/index.js';
 
 const PORT = process.env.SERVER_PORT || 9000;
 
@@ -22,7 +23,7 @@ app.get('/', (req, res) => {
 })
 
 //load routes
-app.use('/test', testRouter);
+app.use('/api', router);
 
 //initialize db connection & start the server
 try {
@@ -39,3 +40,5 @@ try {
 } catch (error) {
     winstonLogger.error('Unable to connect to the database, server failed to start', error);
 }
+
+export { app };

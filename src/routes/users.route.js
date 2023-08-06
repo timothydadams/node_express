@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import * as controller from '../controllers/test.controller.js';
+import * as controller from '../controllers/users.controller.js';
 
 /* GET programming languages. */
 router.get('/', controller.get_all);
@@ -17,4 +17,4 @@ router.put('/:id', controller.update);
 /* DELETE programming language */
 router.delete('/:id', controller.remove);
 
-export const testRouter = router;
+export const usersRouter = router;

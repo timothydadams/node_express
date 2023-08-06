@@ -3,36 +3,18 @@ import { format as dateFormat, parseISO } from "date-fns";
 import { createLogger, format, transports } from "winston";
 import morgan from "morgan";
 
-//const { combine, colorize, timestamp, label, printf } = format;
-
 const loggerConfig = {
     format: format.combine(
-        //format.colorize(),
         format.timestamp({format:'YYYY-MM-DD HH:mm:ss.SSS'}),
-        //label({ label: 'express API' }),
         format.errors({stack:true}),
         format.splat(),
         format.json(),
-        /*
-        printf(
-          info => `${
-            dateFormat(parseISO(info.timestamp), 'HH:mm:ss-SSS')
-            } [${
-              info.level
-            }]\t${
-              info.label
-            }: ${
-              info.message
-            }`
-        ),*/
     ),
     level: process.env.LOG_LEVEL || 'warn',
     defaultMeta: { service: 'ncbm-api' },
     transports: [
-        //
-        // - Write to all logs with level `info` and below to `quick-start-combined.log`.
-        // - Write all logs error (and below) to `quick-start-error.log`.
-        //
+        // - Write to all logs with level `info` and below to `combined.log`.
+        // - Write all logs error (and below) to `error.log`.
         new transports.File({ filename: './logs/errors.log', level: 'error' }),
         new transports.File({ filename: './logs/combined.log' })
     ],
@@ -73,7 +55,7 @@ if (process.env.NODE_ENV !== 'production') {
                 dateFormat(parseISO(info.timestamp), 'HH:mm:ss-SSS')
                 } [${
                   info.level
-                }]\t${
+                }] ${
                   info.label
                 }: ${
                   info.message
