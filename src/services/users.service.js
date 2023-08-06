@@ -8,9 +8,14 @@ const loggingEnabled = true;
 export const getById = async (id) => {
   const res = await Users.findByPk(id);
 
-  //loggingEnabled && winstonLogger.info(JSON.stringify(res));
+  loggingEnabled && winstonLogger.info(JSON.stringify(res));
 
-  return res;
+  if (res) {
+    return res;
+  } else {
+    return {error:{message:"failed to retrieve user"}};
+  }
+  
 }
 
 export const getAllWithCount = async (page = 1) => {

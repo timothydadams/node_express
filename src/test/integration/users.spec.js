@@ -59,7 +59,7 @@ describe("Users", () => {
       
     });
 
-    describe("GET /api/users/:id", function() {
+    describe("GET /api/users/:id (existing user id)", function() {
         let response;
       
         before(async () => {
@@ -76,6 +76,31 @@ describe("Users", () => {
         
         it("is expected that the response body contains an id property", async function() {
             expect(response.body).to.have.a.property("id");
+        });
+      
+    });
+
+    describe("GET /api/users/:id (non-existing user id)", function() {
+        let response;
+      
+        before(async () => {
+          response = await supertest(app).get(`/api/users/aaaabbbbbb`);
+        });
+      
+        it("is expected to respond with status 200", async function () {
+            expect(response.status).to.equal(200);
+        });
+      
+        it("is expected to return an object", async function() {
+            expect(response.body).to.be.an("object");
+        });
+        
+        it("is expected that the response body contains an error property", async function() {
+            expect(response.body).to.have.a.property("error");
+        });
+
+        it("is expected that the error object contains a message property", async function() {
+            expect(response.body.error).to.have.a.property("message");
         });
       
     });
