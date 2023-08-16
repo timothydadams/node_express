@@ -1,7 +1,11 @@
 import * as helpers from '../utils/helper.util.js';
 import * as general from '../configs/general.config.js';
-import { Users } from '../models/users.model.js';
+///import { Users } from '../models/users.model.js';
+import { PrismaClient } from '@prisma/client';
+
 import winstonLogger from '../middleware/logging.middleware.js';
+
+const prisma = new PrismaClient()
 
 const loggingEnabled = true;
 
@@ -34,20 +38,19 @@ export const getAllWithCount = async (page = 1) => {
 }
 
 export const create = async ({
-  firstName,
-  lastName,
+  Event
 }) => {
 
-  if (!firstName) return {error: {message: `firstName cannot be null`}};
-  if (!lastName) return {error: {message: `lastName cannot be null`}};
+  if (!Event) return {error: {message: `event cannot be null`}};
 
-  const res = await Users.create({
-    firstName,
-    lastName,
+  const res = await prisma.bOM_DisasterLocation.create({
+    data: {
+      Event
+    }
   });
   loggingEnabled && winstonLogger.info(JSON.stringify(res));
 
-  return {user:res};
+  return {Event:res};
 }
 
 export const update = async (id, {

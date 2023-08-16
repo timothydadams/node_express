@@ -1,8 +1,9 @@
 import express from 'express';
 const router = express.Router();
 
-import { usersRouter } from './users.route.js';
-router.use('/users', usersRouter);
+import { disasterLocationsRouter } from './disasterLocations.route.js';
+
+router.use('/disasters', disasterLocationsRouter);
 
 
 export default router;

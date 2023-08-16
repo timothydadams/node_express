@@ -1,0 +1,1099 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model BOM_DisasterLocation {
+  ItemID          Int       @id @default(9999)
+  ItemCreatedWhen DateTime? @default(dbgenerated("GETDATE()"))
+  ItemGUID        String    @default(dbgenerated("NEWID()")) @db.UniqueIdentifier
+  Event           String    @db.NVarChar(300)
+}
+
+model BOM_Image_Gallery {
+  Image_GalleryID Int     @id(map: "PK_BOM_Image_Gallery") @default(autoincrement())
+  Image           String? @db.UniqueIdentifier
+}
+
+model BOM_Messages {
+  ItemID          Int       @id(map: "PK_BOM_Messages") @default(autoincrement())
+  ItemCreatedBy   Int?
+  ItemCreatedWhen DateTime?
+  ItemGUID        String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BOM_Messages_ItemGUID") @db.UniqueIdentifier
+  MessageType     String    @default("N'", map: "DEFAULT_BOM_Messages_MessageType") @db.NVarChar(200)
+  Message         String    @default("N'", map: "DEFAULT_BOM_Messages_Message") @db.NVarChar(Max)
+}
+
+model BOM_OrderItemVidStatus {
+  ItemID          Int       @id(map: "PK_BOM_OrderItemVidStatus") @default(autoincrement())
+  ItemCreatedWhen DateTime?
+  ItemGUID        String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BOM_OrderItemVidStatus_ItemGUID") @db.UniqueIdentifier
+  UserViewed      Boolean   @default(false, map: "DEFAULT_BOM_OrderItemVidStatus_UserViewed")
+  OrderItemID     Int       @default(0, map: "DEFAULT_BOM_OrderItemVidStatus_OrderItemID")
+}
+
+model BOM_RecertStatus {
+  ItemID          Int       @id(map: "PK_BOM_RecertStatus") @default(autoincrement())
+  ItemCreatedWhen DateTime?
+  ItemOrder       Int?
+  Status          String    @default("N'", map: "DEFAULT_BOM_RecertStatus_Status") @db.NVarChar(200)
+  OrderItemID     Int       @default(0, map: "DEFAULT_BOM_RecertStatus_OrderItemID")
+}
+
+model BP_AccountingCode {
+  ItemID            Int       @id(map: "PK_BP_AccountingCode") @default(autoincrement())
+  ItemCreatedBy     Int?
+  ItemCreatedWhen   DateTime?
+  ItemModifiedBy    Int?
+  ItemModifiedWhen  DateTime?
+  ItemOrder         Int?
+  ItemGUID          String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_AccountingCode_ItemGUID") @db.UniqueIdentifier
+  BP_AccountingCode String?   @db.NVarChar(200)
+  BP_Description    String?   @db.NVarChar(200)
+}
+
+model BP_Category {
+  ItemID           Int       @id(map: "PK_BP_Category") @default(autoincrement())
+  ItemCreatedBy    Int?
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_Category_ItemGUID") @db.UniqueIdentifier
+  BP_Category      String?   @default("N'test'", map: "DEFAULT_BP_Category_BP_Category") @db.NVarChar(200)
+}
+
+model BP_CountiesByRegion {
+  ItemID Int    @id(map: "PK_BP_CountiesByRegion") @default(autoincrement())
+  County String @default("N'", map: "DEFAULT_BP_CountiesByRegion_County") @db.NVarChar(200)
+  Region Int    @default(0, map: "DEFAULT_BP_CountiesByRegion_Region")
+}
+
+model BP_Donation {
+  DonationID              Int     @id(map: "PK_BP_Donation") @default(autoincrement())
+  ProductName             String? @db.NVarChar(440)
+  ProductShortDescription String? @db.NVarChar(200)
+  ProductLongDescription  String? @default("N'", map: "DEFAULT_BP_Donation_ProductLongDescription") @db.NVarChar(Max)
+  ProductPrice            Float   @default(0, map: "DEFAULT_BP_Donation_ProductPrice")
+}
+
+model BP_Employee {
+  EmployeeID Int    @id(map: "PK_BP_Employee") @default(autoincrement())
+  Name       String @default("N'", map: "DEFAULT_BP_Employee_Name") @db.NVarChar(150)
+  Title      String @default("N'", map: "DEFAULT_BP_Employee_Title") @db.NVarChar(150)
+  Phone      String @default("N'", map: "DEFAULT_BP_Employee_Phone") @db.NVarChar(20)
+  Email      String @default("N'", map: "DEFAULT_BP_Employee_Email") @db.NVarChar(75)
+  Type       String @default("N'", map: "DEFAULT_BP_Employee_Type") @db.NVarChar(100)
+}
+
+model BP_Events {
+  EventsID                  Int       @id(map: "PK_BP_Events") @default(autoincrement())
+  BP_Title                  String    @db.NVarChar(200)
+  BP_Partnership            String    @default("N'", map: "DEFAULT_BP_Events_BP_Partnership") @db.NVarChar(200)
+  BP_Address                String?   @db.NVarChar(Max)
+  BP_ShowEndTime            Boolean?  @default(true, map: "DEFAULT_BP_Events_BP_ShowEndTime")
+  BP_Overnight              String?   @default("N'Day'", map: "DEFAULT_BP_Events_BP_Overnight") @db.NVarChar(50)
+  BP_Gender                 String?   @default("N'No Restrictions'", map: "DEFAULT_BP_Events_BP_Gender") @db.NVarChar(50)
+  BP_AgeGrade               String?   @default("N'No Restrictions'", map: "DEFAULT_BP_Events_BP_AgeGrade") @db.NVarChar(50)
+  BP_AgeGradeRestrictions   String?   @db.NVarChar(200)
+  BP_Description            String?   @db.NVarChar(Max)
+  BP_NCBMManaged            Boolean   @default(true, map: "DEFAULT_BP_Events_BP_NCBMManaged")
+  BP_Coordinator            Int?
+  BP_ShowCoordinatorPhone   Boolean   @default(true, map: "DEFAULT_BP_Events_BP_ShowCoordinatorPhone")
+  BP_ShowCoordinatorEmail   Boolean   @default(true, map: "DEFAULT_BP_Events_BP_ShowCoordinatorEmail")
+  BP_Administrator          Int?
+  BP_ShowAdministratorPhone Boolean   @default(true, map: "DEFAULT_BP_Events_BP_ShowAdministratorPhone")
+  BP_ShowAdministratorEmail Boolean   @default(true, map: "DEFAULT_BP_Events_BP_ShowAdministratorEmail")
+  BP_RequiredShots          String?   @db.NVarChar(300)
+  BP_Private                Boolean   @default(false, map: "DEFAULT_BP_Events_BP_Private")
+  BP_Roles                  String?   @db.NVarChar(Max)
+  BP_Categories             String?   @db.NVarChar(300)
+  BP_AccountingCode         String    @default("N'", map: "DEFAULT_BP_Events_BP_AccountingCode") @db.NVarChar(200)
+  BP_Filled                 Boolean?  @default(false, map: "DEFAULT_BP_Events_BP_Filled")
+  BP_ReserveInstructions    String?   @db.NVarChar(Max)
+  BP_Repeats                Boolean?  @default(false, map: "DEFAULT_BP_Events_BP_Repeats")
+  BP_RepeatQuantity         Int?
+  BP_RepeatsUnit            String?   @db.NVarChar(50)
+  BP_RepeatDuration         Int?
+  BP_Type                   String?   @db.NVarChar(200)
+  BP_ShowAddressMap         Boolean?  @default(true, map: "DEFAULT_BP_Events_BP_ShowAddressMap")
+  BP_ShowDateOnly           Boolean?  @default(true, map: "DEFAULT_BP_Events_BP_ShowDateOnly")
+  BP_PrivateURL             String?   @default("N'https://baptistsonmission.org/Details?eventid={?eventid?}'", map: "DEFAULT_BP_Events_BP_PrivateURL") @db.NVarChar(200)
+  BP_ThankYouMessage        String?   @db.NVarChar(Max)
+  BP_DatesFlexible          Boolean?  @default(false, map: "DEFAULT_BP_Events_BP_DatesFlexible")
+  BP_ContactName            String?   @db.NVarChar(200)
+  BP_ContactEmail           String?   @db.NVarChar(200)
+  BP_ContactPhone           String?   @db.NVarChar(20)
+  BP_EndDate                DateTime?
+  BP_StartDate              DateTime  @default(dbgenerated("9/19/2014 1:20:04 PM"), map: "DEFAULT_BP_Events_BP_StartDate")
+  BP_PublishFromDate        DateTime  @default(dbgenerated("1/6/2015 1:28:00 PM"), map: "DEFAULT_BP_Events_BP_PublishFromDate")
+  BP_PublishToDate          DateTime  @default(dbgenerated("1/6/2015 1:28:06 PM"), map: "DEFAULT_BP_Events_BP_PublishToDate")
+  BP_RequireCheckinPhoto    Boolean?  @default(false, map: "DEFAULT_BP_Events_BP_RequireCheckinPhoto")
+  BP_RequireCheckin         Boolean   @default(false, map: "DEFAULT_BP_Events_BP_RequireCheckin")
+  BP_BGCheckMessage         String?   @db.NVarChar(Max)
+  BP_ButtonText             String?   @default("N'Register'", map: "DEFAULT_BP_Events_BP_ButtonText") @db.NVarChar(200)
+  BP_Reserved               Boolean?  @default(false, map: "DEFAULT_BP_Events_BP_Reserved")
+  BP_FilledText             String?   @db.NVarChar(Max)
+  BP_EmailCopy              String?   @db.NVarChar(Max)
+  BP_SendContactAdminEmail  Boolean   @default(true, map: "DEFAULT_BP_Events_BP_SendContactAdminEmail")
+  BP_SendCoordinatorEmail   Boolean   @default(true, map: "DEFAULT_BP_Events_BP_SendCoordinatorEmail")
+  BP_SendAdministratorEmail Boolean   @default(true, map: "DEFAULT_BP_Events_BP_SendAdministratorEmail")
+  Emails                    String?   @db.NVarChar(200)
+  BP_PendingApprovalMessage String?   @db.NVarChar(Max)
+  BP_ApprovalMessage        String?   @db.NVarChar(Max)
+  BP_DeniedApprovalMessage  String?   @db.NVarChar(Max)
+  BP_NCBMBGCheckMessage     String?   @db.NVarChar(Max)
+}
+
+model BP_EventTab {
+  BP_EventTabID     Int     @id(map: "PK_BP_EventTab") @default(autoincrement())
+  BP_TabName        String  @db.NVarChar(200)
+  BP_TabDescription String? @db.NVarChar(Max)
+  BP_TabAltForm     Boolean @default(false, map: "DEFAULT_BP_EventTab_BP_TabAltForm")
+  BP_TabAltFormName String  @default("N'None'", map: "DEFAULT_BP_EventTab_BP_TabAltFormName") @db.NVarChar(200)
+  BP_TabClass       Boolean @default(false, map: "DEFAULT_BP_EventTab_BP_TabClass")
+  BP_TabClassName   String  @default("N'None'", map: "DEFAULT_BP_EventTab_BP_TabClassName") @db.NVarChar(200)
+  BP_TabURL         Boolean @default(false, map: "DEFAULT_BP_EventTab_BP_TabURL")
+  BP_TabURLPath     String  @default("N'None'", map: "DEFAULT_BP_EventTab_BP_TabURLPath") @db.NVarChar(300)
+}
+
+model BP_EventType {
+  BP_EventTypeID        Int     @id(map: "PK_BP_EventType") @default(autoincrement())
+  BP_TypeName           String  @db.NVarChar(200)
+  BP_TypeDescription    String  @db.NVarChar(Max)
+  BP_TypeTabs           String  @db.NVarChar(200)
+  BP_TypeAllowRatioReg  Boolean @default(false, map: "DEFAULT_BP_EventType_BP_TypeAllowRatioReg")
+  BP_TypeAllowSplitForm Boolean @default(false, map: "DEFAULT_BP_EventType_BP_TypeAllowSplitForm")
+}
+
+model BP_Feature {
+  SliderID Int     @id(map: "PK_BP_Feature") @default(autoincrement())
+  Title    String  @default("N'", map: "DEFAULT_BP_Feature_Title") @db.NVarChar(150)
+  Photo    String  @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_Feature_Photo") @db.UniqueIdentifier
+  EventURL String? @db.NVarChar(200)
+  URLType  String  @default("N'", map: "DEFAULT_BP_Feature_URLType") @db.NVarChar(200)
+  PageURL  String? @db.NVarChar(150)
+}
+
+model BP_Health_Topic {
+  HealthTopicID Int     @id(map: "PK_BP_Health_Topic") @default(autoincrement())
+  TopicText     String  @default("N'", map: "DEFAULT_BP_Health_Topic_TopicText") @db.NVarChar(Max)
+  TopicTitle    String  @default("N'", map: "DEFAULT_BP_Health_Topic_TopicTitle") @db.NVarChar(150)
+  TopicPhoto    String? @db.UniqueIdentifier
+  TopicURL      String? @db.NVarChar(150)
+  TopicFullText String  @default("N'", map: "DEFAULT_BP_Health_Topic_TopicFullText") @db.NVarChar(Max)
+}
+
+model BP_Injection {
+  ItemID           Int       @id(map: "PK_BP_Injection") @default(autoincrement())
+  ItemCreatedBy    Int?
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_Injection_ItemGUID") @db.UniqueIdentifier
+  BP_Injection     String    @default("N'", map: "DEFAULT_BP_Injection_BP_Injection") @db.NVarChar(200)
+}
+
+model BP_MappedLocations {
+  ItemID           Int       @id(map: "PK_BP_MappedLocations") @default(autoincrement())
+  ItemCreatedBy    Int?
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_MappedLocations_ItemGUID") @db.UniqueIdentifier
+  OrgId            Int?      @default(0, map: "DEFAULT_BP_MappedLocations_OrgId")
+  OrgType          String?   @default("N'", map: "DEFAULT_BP_MappedLocations_OrgType") @db.NVarChar(300)
+  AssnName         String?   @default("N'", map: "DEFAULT_BP_MappedLocations_AssnName") @db.NVarChar(300)
+  Name             String?   @default("N'", map: "DEFAULT_BP_MappedLocations_Name") @db.NVarChar(300)
+  Phone            String?   @default("N'", map: "DEFAULT_BP_MappedLocations_Phone") @db.NVarChar(30)
+  Email            String?   @default("N'", map: "DEFAULT_BP_MappedLocations_Email") @db.NVarChar(200)
+  Address          String?   @default("N'", map: "DEFAULT_BP_MappedLocations_Address") @db.NVarChar(400)
+  City             String?   @default("N'", map: "DEFAULT_BP_MappedLocations_City") @db.NVarChar(200)
+  State            String?   @default("N'", map: "DEFAULT_BP_MappedLocations_State") @db.NVarChar(200)
+  Zip              String?   @default("N'", map: "DEFAULT_BP_MappedLocations_Zip") @db.NVarChar(20)
+  Latitude         Decimal?  @db.Decimal(19, 4)
+  Longitude        Decimal?  @db.Decimal(19, 4)
+}
+
+model BP_Message {
+  ItemID            Int       @id(map: "PK_BP_Message") @default(autoincrement())
+  Subject           String?   @db.NVarChar(200)
+  Message           String?   @db.NVarChar(200)
+  MessageType       String?   @db.NVarChar(200)
+  MessageTemplateID Int       @default(0, map: "DEFAULT_BP_Message_MessageTemplateID")
+  EventID           Int?
+  Status            String?   @db.NVarChar(200)
+  SendDateTime      DateTime?
+  ItemCreatedBy     Int?
+  ItemCreatedWhen   DateTime?
+  ItemModifiedBy    Int?
+  ItemModifiedWhen  DateTime?
+  ItemOrder         Int?
+  ItemGUID          String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_Message_ItemGUID") @db.UniqueIdentifier
+}
+
+model BP_MessageSent {
+  ItemID               Int       @id(map: "PK_BP_MessageSent") @default(autoincrement())
+  Subject              String?   @db.NVarChar(200)
+  MessageID            String?   @db.NVarChar(200)
+  EventID              Int?
+  FullName             String    @default("N'", map: "DEFAULT_BP_MessageSent_FullName") @db.NVarChar(100)
+  ToEmail              String?   @db.NVarChar(200)
+  From                 String    @default("N'", map: "DEFAULT_BP_MessageSent_From") @db.NVarChar(200)
+  SMSNumber            Int?
+  Status               String?   @db.NVarChar(200)
+  LastSendAttempt      DateTime?
+  ErrorMessage         String?   @db.NVarChar(200)
+  MessageType          Int       @default(0, map: "DEFAULT_BP_MessageSent_MessageType")
+  RecipientTypeID      Int?
+  RecipientReferenceID Int?
+  ItemCreatedBy        Int?
+  ItemCreatedWhen      DateTime?
+  ItemModifiedBy       Int?
+  ItemModifiedWhen     DateTime?
+  ItemOrder            Int?
+  ItemGUID             String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_MessageSent_ItemGUID") @db.UniqueIdentifier
+}
+
+model BP_MessageType {
+  ItemID           Int       @id(map: "PK_BP_MessageType") @default(autoincrement())
+  MessageType      String    @default("N'", map: "DEFAULT_BP_MessageType_MessageType") @db.NVarChar(200)
+  ItemCreatedBy    Int?
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_MessageType_ItemGUID") @db.UniqueIdentifier
+}
+
+model BP_Partnership {
+  ItemID           Int       @id(map: "PK_BP_Partnership") @default(autoincrement())
+  ItemCreatedBy    Int?
+  BP_R_UserGuid    String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_Partnership_BP_R_UserGuid") @db.UniqueIdentifier
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_Partnership_ItemGUID") @db.UniqueIdentifier
+  BP_Partnership   String    @default("N'", map: "DEFAULT_BP_Partnership_BP_Partnership") @db.NVarChar(200)
+}
+
+model BP_Policies {
+  ItemID           Int       @id(map: "PK_BP_Policies") @default(autoincrement())
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  BP_PolicyHeader  String    @default("N'", map: "DEFAULT_BP_Policies_BP_PolicyHeader") @db.NVarChar(200)
+  BP_PolicyBody    String    @default("N'", map: "DEFAULT_BP_Policies_BP_PolicyBody") @db.NVarChar(Max)
+  BP_PolicyType    String    @default("N'", map: "DEFAULT_BP_Policies_BP_PolicyType") @db.NVarChar(200)
+}
+
+model BP_PrayerRequest {
+  ItemID           Int       @id(map: "PK_BP_PrayerRequest") @default(autoincrement())
+  ItemCreatedBy    Int?
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_PrayerRequest_ItemGUID") @db.UniqueIdentifier
+  FullName         String    @default("N'", map: "DEFAULT_BP_PrayerRequest_FullName") @db.NVarChar(150)
+  Email            String    @default("N'", map: "DEFAULT_BP_PrayerRequest_Email") @db.NVarChar(100)
+  RequestTitle     String    @default("N'", map: "DEFAULT_BP_PrayerRequest_RequestTitle") @db.NVarChar(150)
+  PrayerRequest    String    @default("N'", map: "DEFAULT_BP_PrayerRequest_PrayerRequest")
+  PrayerFrom       DateTime  @default(dbgenerated("1/1/0001 12:00:00 AM"), map: "DEFAULT_BP_PrayerRequest_PrayerFrom")
+  PrayerTo         DateTime  @default(dbgenerated("1/1/0001 12:00:00 AM"), map: "DEFAULT_BP_PrayerRequest_PrayerTo")
+  Status           String?   @db.NVarChar(25)
+}
+
+model BP_RecipientType {
+  ItemID           Int       @id(map: "PK_BP_RecipientType") @default(autoincrement())
+  RecipientType    String?   @db.NVarChar(200)
+  ItemCreatedBy    Int?
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_RecipientType_ItemGUID") @db.UniqueIdentifier
+}
+
+model BP_Refunds {
+  ItemID          Int       @id(map: "PK_BP_Refunds") @default(autoincrement())
+  ItemCreatedBy   Int?
+  ItemCreatedWhen DateTime?
+  BPCustomerName  String?   @default("N'", map: "DEFAULT_BP_Refunds_BPCustomerName") @db.NVarChar(200)
+  BPOrderID       Int?      @default(0, map: "DEFAULT_BP_Refunds_BPOrderID")
+  BPAmount        Float?
+  BPStatus        String?   @default("N'", map: "DEFAULT_BP_Refunds_BPStatus") @db.NVarChar(200)
+  BPNote          String?   @default("N'", map: "DEFAULT_BP_Refunds_BPNote") @db.NVarChar(Max)
+  BPAttendee      Int?      @default(0, map: "DEFAULT_BP_Refunds_BPAttendee")
+  BPEventID       Int?      @default(0, map: "DEFAULT_BP_Refunds_BPEventID")
+}
+
+model BP_SkillsQuailifications {
+  ItemID           Int       @id(map: "PK_BP_SkillsQuailifications") @default(autoincrement())
+  ItemCreatedBy    Int?
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BP_SkillsQuailifications_ItemGUID") @db.UniqueIdentifier
+  Skill            String?   @db.NVarChar(200)
+  SkillCategory    String?   @db.NVarChar(200)
+}
+
+model BP_SkillsQualifications {
+  ItemID           Int       @id(map: "PK_dbo.BP_SkillsQualifications") @default(autoincrement())
+  ItemCreatedBy    Int?
+  BP_R_UserGuid    String    @db.UniqueIdentifier
+  ItemCreatedWhen  DateTime?
+  ItemModifiedBy   Int?
+  ItemModifiedWhen DateTime?
+  ItemOrder        Int?
+  ItemGUID         String    @db.UniqueIdentifier
+  BP_Partnership   String    @db.NVarChar(200)
+}
+
+model BPEvents_BPAttendee {
+  BPAttendeeID                  Int       @id(map: "PK_BPEvents_BPAttendee") @default(autoincrement())
+  BPEventID                     Int?
+  BPAttendeeFN                  String?   @db.NVarChar(200)
+  BPAttendeeLN                  String?   @db.NVarChar(200)
+  BPAttendeeEmail               String?   @db.NVarChar(200)
+  BPAttendeePhone               String?   @db.NVarChar(15)
+  BPAttendeeOther               String?   @db.NVarChar(Max)
+  BPAttendeeStatus              String?   @default("N'Pending Approval'", map: "DEFAULT_BPEvents_BPAttendee_BPAttendeeStatus") @db.NVarChar(200)
+  BPAttendeeOrderID             Int?
+  BPAttendeeCheckInDate         DateTime? @db.Date
+  BPAttendeeApproved            Boolean?  @default(false, map: "DEFAULT_BPEvents_BPAttendee_BPAttendeeApproved")
+  BPAttendeeBalance             Float?
+  BPAttendeeUserID              Int?
+  BPAttendeeDepartureDate       DateTime? @db.Date
+  BPAttendeeArrivalDate         DateTime? @db.Date
+  BPAttendeeBackGroundCheckDate DateTime?
+  BPAttendeeType                String?   @db.NVarChar(100)
+  BPAttendeeGroup               String?   @db.NVarChar(200)
+  BPAttendeeAddress             String?   @db.NVarChar(200)
+  BPAttendeeAddress2            String?   @db.NVarChar(200)
+  BPAttendeeCity                String?   @db.NVarChar(200)
+  BPAttendeeState               String?   @default("N'North Carolina'", map: "DEFAULT_BPEvents_BPAttendee_BPAttendeeState") @db.NVarChar(200)
+  BPAttendeeZip                 String?   @db.NVarChar(10)
+  BPAttendeeCountry             String?   @db.NVarChar(200)
+  BPAttendeeDOB                 String?   @default("N'", map: "DEFAULT_BPEvents_BPAttendee_BPAttendeeDOB") @db.NVarChar(50)
+  BPAttendeeChurch              String?   @db.NVarChar(200)
+  BPRegistrationID              Int?
+  BPAttendeeCheckOutDate        DateTime? @db.Date
+  BPAttendeeRegistrationDate    DateTime? @default(dbgenerated("1/1/0001 12:00:00 AM"), map: "DEFAULT_BPEvents_BPAttendee_BPAttendeeRegistrationDate")
+
+  @@index([BPEventID], map: "nci_wi_BPEvents_BPAttendee_4F809843B19616FDCC6D1AC9777B945C")
+}
+
+model BPEvents_BPAttendees {
+  BPAttendeeID                  Int       @id(map: "PK__BPEvents__95811C4DA9657614") @default(autoincrement())
+  BPEventID                     Int?
+  BPAttendeeFN                  String?   @db.NVarChar(255)
+  BPAttendeeLN                  String?   @db.NVarChar(255)
+  BPAttendeeEmail               String?   @db.NVarChar(255)
+  BPAttendeePhone               String?   @db.NVarChar(255)
+  BPAttendeeOther               String?   @db.NVarChar(255)
+  BPAttendeeStatus              String?   @db.NVarChar(255)
+  BPAttendeeOrderID             Int?
+  BPAttendeeCheckInDate         DateTime? @db.DateTimeOffset
+  BPAttendeeApproved            Boolean?
+  BPAttendeeBalance             Float?
+  BPAttendeeUserID              Int?
+  BPAttendeeDepartureDate       DateTime? @db.DateTimeOffset
+  BPAttendeeArrivalDate         DateTime? @db.DateTimeOffset
+  BPAttendeeBackgroundCheckDate DateTime? @db.DateTimeOffset
+  BPAttendeeType                String?   @db.NVarChar(255)
+  BPRegistrationID              Int?
+  BPAttendeeRegistrationDate    DateTime? @db.DateTimeOffset
+  createdAt                     DateTime  @db.DateTimeOffset
+  updatedAt                     DateTime  @db.DateTimeOffset
+}
+
+model BPEvents_BPGroups {
+  BPGroupsID   Int    @id(map: "PK_BPEvents_BPGroups") @default(autoincrement())
+  BPEventID    Int?
+  BPGroupName  String @default("N'", map: "DEFAULT_BPEvents_BPGroups_BPGroupName") @db.NVarChar(200)
+  BPGroupOwner Int?
+  BPGroupSize  Int    @default(0, map: "DEFAULT_BPEvents_BPGroups_BPGroupSize")
+}
+
+model BPEvents_Recertifications {
+  RecertificationsID Int     @id(map: "PK_BPEvents_Recertifications") @default(autoincrement())
+  Product            Int     @default(0, map: "DEFAULT_BPEvents_Recertifications_Product")
+  Media              String? @default("N'", map: "DEFAULT_BPEvents_Recertifications_Media") @db.NVarChar(400)
+}
+
+model BPEvents_Registration {
+  RegistrationID                  Int       @id(map: "PK_BPEvents_Registration") @default(autoincrement())
+  RegistrationName                String    @default("N'", map: "DEFAULT_BPEvents_Registration_RegistrationName") @db.NVarChar(200)
+  RegistrationCost                Float?
+  RequireSignIn                   Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_RequireSignIn")
+  RequireBGCheck                  Boolean   @default(false, map: "DEFAULT_BPEvents_Registration_RequireBGCheck")
+  RequireApproval                 Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_RequireApproval")
+  AllowGroups                     Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_AllowGroups")
+  MaxGroupSize                    Int?
+  SectionLabel                    String?   @db.NVarChar(200)
+  RegistrationType                String?   @db.NVarChar(50)
+  RegistrationFields              String?   @default("N'", map: "DEFAULT_BPEvents_Registration_RegistrationFields") @db.NVarChar(Max)
+  ProfileSections                 String?   @db.NVarChar(Max)
+  RegistrationAllowDeposit        Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_RegistrationAllowDeposit")
+  RegistrationDepositAmount       Float?
+  BPEventID                       Int       @default(0, map: "DEFAULT_BPEvents_Registration_BPEventID")
+  RegistrationSKU                 Int?
+  RegistrationCapacity            Int?
+  RegistrationAllowOverCapacity   Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_RegistrationAllowOverCapacity")
+  RegistrationDescription         String?   @db.NVarChar(Max)
+  HasDependencies                 Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_HasDependencies")
+  Dependency                      Int?
+  RequireSupplementalInsurance    Boolean   @default(false, map: "DEFAULT_BPEvents_Registration_RequireSupplementalInsurance")
+  BGCheckType                     Int?      @default(0, map: "DEFAULT_BPEvents_Registration_BGCheckType")
+  RequireSignature                Boolean   @default(false, map: "DEFAULT_BPEvents_Registration_RequireSignature")
+  ProjectRegistrationType         String?   @db.NVarChar(200)
+  RegistrationEnabled             Boolean   @default(true, map: "DEFAULT_BPEvents_Registration_RegistrationEnabled")
+  SupplementalInsuranceType       String?   @db.NVarChar(200)
+  HasMembership                   Boolean   @default(false, map: "DEFAULT_BPEvents_Registration_HasMembership")
+  AssociatedMembership            String?   @db.UniqueIdentifier
+  RegistrationHasDates            Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_RegistrationHasDates")
+  RegistrationStartDate           DateTime?
+  RegistrationEndDate             DateTime?
+  RegistrationRequiredCost        Boolean?  @default(false, map: "DEFAULT_BPEvents_Registration_RegistrationRequiredCost")
+  RegistrationRequiredCostName    String?   @db.NVarChar(200)
+  RegistrationRequiredPrice       Float?
+  RegistrationRequiredDescription String?   @db.NVarChar(Max)
+  WaiverDR                        Boolean   @default(false, map: "DEFAULT_BPEvents_Registration_WaiverDR")
+  RegistrationItinerary           String?   @db.NVarChar(200)
+  RegistrationOrder               Int?      @default(0, map: "DEFAULT_BPEvents_Registration_RegistrationOrder")
+  RegistrationRequiredCostDeposit Float?
+}
+
+model BPProfile_BPChurches {
+  BPChurchesID     Int     @id(map: "PK_BPProfile_BPChurches") @default(autoincrement())
+  BP_C_Name        String  @db.NVarChar(200)
+  BP_C_Association String  @db.NVarChar(200)
+  BP_C_State       String? @default("N'North Carolina'", map: "DEFAULT_BPProfile_BPChurches_BP_C_State") @db.NVarChar(200)
+  BP_C_City        String? @db.NVarChar(200)
+  BP_C_PastorFN    String? @db.NVarChar(200)
+  BP_C_PastorLN    String? @db.NVarChar(200)
+  BP_C_PastorPhone String? @db.NVarChar(20)
+  BP_C_PastorEmail String? @db.NVarChar(200)
+  BP_C_BelongsTo   Int     @default(0, map: "DEFAULT_BPProfile_BPChurches_BP_C_BelongsTo")
+  BP_C_Address     String? @db.NVarChar(200)
+  BP_C_Zip         String? @db.NVarChar(10)
+  BP_C_Region      Int?
+}
+
+model BPProfile_BPEducation {
+  BPEducationID  Int    @id(map: "PK_BPProfile_BPEducation") @default(autoincrement())
+  BP_UserGUID    String @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BPProfile_BPEducation_BP_UserGUID") @db.UniqueIdentifier
+  BP_E_School    String @db.NVarChar(200)
+  BP_E_Degree    String @db.NVarChar(200)
+  BP_E_Field     String @db.NVarChar(200)
+  BP_E_YearsFrom String @db.NVarChar(200)
+  BP_E_YearsTo   String @db.NVarChar(200)
+}
+
+model BPProfile_BPEducations {
+  BPEducationID  Int      @id(map: "PK__BPProfil__1B68563C0A553DE3") @default(autoincrement())
+  BP_UserGUID    String?  @db.Char(36)
+  BP_E_School    String?  @db.NVarChar(255)
+  BP_E_Degree    Int?
+  BP_E_Field     Int?
+  BP_E_YearsFrom String?  @db.NVarChar(255)
+  BP_E_YearsTo   String?  @db.NVarChar(255)
+  createdAt      DateTime @db.DateTimeOffset
+  updatedAt      DateTime @db.DateTimeOffset
+}
+
+model BPProfile_BPEmergencyContacts {
+  BPEmergencyContactsID Int     @id(map: "PK_BPProfile_BPEmergencyContacts") @default(autoincrement())
+  BP_UserGUID           String  @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BPProfile_BPEmergencyContacts_BP_UserGUID") @db.UniqueIdentifier
+  BP_EC_FullName        String  @db.NVarChar(200)
+  BP_EC_Relationship    String? @db.NVarChar(200)
+  BP_EC_Email           String  @db.NVarChar(200)
+  BP_EC_Phone           String  @db.NVarChar(200)
+}
+
+model BPProfile_BPReferences {
+  BPReferencesID Int    @id(map: "PK_BPProfile_BPReferences") @default(autoincrement())
+  BP_UserGUID    String @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BPProfile_BPReferences_BP_UserGUID") @db.UniqueIdentifier
+  BP_R_Name      String @db.NVarChar(200)
+  BP_R_Phone     String @db.NVarChar(20)
+}
+
+model BPProfile_BPSkills {
+  BPSkillsID   Int     @id(map: "PK_BP_Skills") @default(autoincrement())
+  BP_UserGUID  String  @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BPProfile_BPSkills_BP_UserGUID") @db.UniqueIdentifier
+  BP_S_Skill   Int     @default(0, map: "DEFAULT_BPProfile_BPSkills_BP_S_Skill")
+  BP_S_Years   String? @default("N'0'", map: "DEFAULT_BPProfile_BPSkills_BP_S_Years") @db.NVarChar(200)
+  BP_S_License String? @db.NVarChar(200)
+  BP_S_Status  String  @default("N'0'", map: "DEFAULT_BPProfile_BPSkills_BP_S_Status") @db.NVarChar(200)
+}
+
+model BPProfile_Churches {
+  BPChurchesID     Int      @id(map: "PK__BPProfil__DC310CCB31ED20C1") @default(autoincrement())
+  BP_C_Name        Int?
+  BP_C_Association String?  @db.NVarChar(255)
+  BP_C_State       String?  @db.NVarChar(255)
+  BP_C_City        String?  @db.NVarChar(255)
+  BP_C_PastorFN    String?  @db.NVarChar(255)
+  BP_C_PastorLN    String?  @db.NVarChar(255)
+  BP_C_PastorPhone String?  @db.NVarChar(255)
+  BP_C_PastorEmail String?  @db.NVarChar(255)
+  BP_C_BelongsTo   Int?
+  BP_C_Address     String?  @db.NVarChar(255)
+  BP_C_Zip         String?  @db.NVarChar(255)
+  BP_C_Region      Int?
+  createdAt        DateTime @db.DateTimeOffset
+  updatedAt        DateTime @db.DateTimeOffset
+}
+
+model BPProfile_Sections {
+  BPSectionsID          Int      @id(map: "PK_BPProfile_Sections") @default(autoincrement())
+  BP_SectionName        String   @db.NVarChar(200)
+  BP_SectionClassName   String?  @default("N'None'", map: "DEFAULT_BPProfile_Sections_BP_SectionClassName") @db.NVarChar(200)
+  BP_SectionClass       Boolean? @default(false, map: "DEFAULT_BPProfile_Sections_BP_SectionClass")
+  BP_SectionAltForm     Boolean? @default(false, map: "DEFAULT_BPProfile_Sections_BP_SectionAltForm")
+  BP_SectionAltFormName String?  @default("N'None'", map: "DEFAULT_BPProfile_Sections_BP_SectionAltFormName") @db.NVarChar(200)
+  BP_SectionURL         Boolean? @default(false, map: "DEFAULT_BPProfile_Sections_BP_SectionURL")
+  BP_SectionURLPath     String?  @default("N'None'", map: "DEFAULT_BPProfile_Sections_BP_SectionURLPath") @db.NVarChar(300)
+  BP_SectionOrder       Int?
+}
+
+model BPS_Airport_US {
+  ItemID  Int    @id(map: "PK_BPS_Airport_US") @default(autoincrement())
+  State   String @default("N'", map: "DEFAULT_BPS_Airport_US_State") @db.NVarChar(2)
+  Code    String @default("N'", map: "DEFAULT_BPS_Airport_US_Code") @db.NVarChar(50)
+  Airport String @default("N'", map: "DEFAULT_BPS_Airport_US_Airport") @db.NVarChar(150)
+}
+
+model BPS_EventReminder {
+  ItemID             Int       @id(map: "PK_BPS_EventReminder") @default(autoincrement())
+  ItemCreatedBy      Int?
+  ItemCreatedWhen    DateTime?
+  ItemModifiedBy     Int?
+  ItemModifiedWhen   DateTime?
+  ItemGUID           String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_BPS_EventReminder_ItemGUID") @db.UniqueIdentifier
+  EventId            Int       @default(0, map: "DEFAULT_BPS_EventReminder_EventId")
+  Email              String    @default("N'", map: "DEFAULT_BPS_EventReminder_Email") @db.NVarChar(150)
+  ReminderDaysBefore Int       @default(0, map: "DEFAULT_BPS_EventReminder_ReminderDaysBefore")
+  ReminderSentDate   DateTime?
+}
+
+model BPS_ProjectGroup {
+  ItemID            Int       @id(map: "PK_BPS_ProjectGroup") @default(autoincrement())
+  Name              String    @default("N'", map: "DEFAULT_BPS_ProjectGroup_Name") @db.NVarChar(50)
+  IsPartnership     Boolean   @default(false, map: "DEFAULT_BPS_ProjectGroup_IsPartnership")
+  ProjectCode       String    @default("N'", map: "DEFAULT_BPS_ProjectGroup_ProjectCode") @db.NVarChar(50)
+  ReceiptNumber     Int       @default(1000, map: "DEFAULT_BPS_ProjectGroup_ReceiptNumber")
+  IsDonationCode    Boolean?  @default(false, map: "DEFAULT_BPS_ProjectGroup_IsDonationCode")
+  IsEventCode       Boolean?  @default(false, map: "DEFAULT_BPS_ProjectGroup_IsEventCode")
+  IsMerchandiseCode Boolean   @default(false, map: "DEFAULT_BPS_ProjectGroup_IsMerchandiseCode")
+  IsProjectCode     Boolean   @default(false, map: "DEFAULT_BPS_ProjectGroup_IsProjectCode")
+  IsDeleted         Boolean   @default(false, map: "DEFAULT_BPS_ProjectGroup_IsDeleted")
+  ItemCreatedBy     Int?
+  ItemCreatedWhen   DateTime?
+  ItemModifiedBy    Int?
+  ItemModifiedWhen  DateTime?
+}
+
+model CMS_Category {
+  CategoryID           Int       @id(clustered: false, map: "PK_CMS_Category") @default(autoincrement())
+  CategoryDisplayName  String    @default("", map: "DEFAULT_CMS_Category_CategoryDisplayName") @db.NVarChar(250)
+  CategoryName         String?   @db.NVarChar(250)
+  CategoryDescription  String?   @db.NVarChar(Max)
+  CategoryCount        Int?
+  CategoryEnabled      Boolean   @default(true, map: "DEFAULT_CMS_Category_CategoryEnabled")
+  CategoryUserID       Int?
+  CategoryGUID         String    @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_CMS_Category_CategoryGUID") @db.UniqueIdentifier
+  CategoryLastModified DateTime
+  CategorySiteID       Int?
+  CategoryParentID     Int?
+  CategoryIDPath       String?   @db.NVarChar(450)
+  CategoryNamePath     String?   @db.NVarChar(1500)
+  CategoryLevel        Int?
+  CategoryOrder        Int?
+  CMS_Site             CMS_Site? @relation(fields: [CategorySiteID], references: [SiteID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_Category_CategorySiteID_CMS_Site")
+  CMS_User             CMS_User? @relation(fields: [CategoryUserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_Category_CategoryUserID_CMS_User")
+
+  @@index([CategoryDisplayName, CategoryEnabled], map: "IX_CMS_Category_CategoryDisplayName_CategoryEnabled", clustered: true)
+  @@index([CategorySiteID], map: "IX_CMS_Category_CategorySiteID")
+  @@index([CategoryUserID], map: "IX_CMS_Category_CategoryUserID")
+}
+
+model CMS_Country {
+  CountryID              Int         @id(clustered: false, map: "PK_CMS_Country") @default(autoincrement())
+  CountryDisplayName     String      @default("", map: "DEFAULT_cms_country_CountryDisplayName") @db.NVarChar(200)
+  CountryName            String      @default("", map: "DEFAULT_cms_country_CountryName") @db.NVarChar(200)
+  CountryGUID            String      @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_cms_country_CountryGUID") @db.UniqueIdentifier
+  CountryLastModified    DateTime    @default(dbgenerated("11/14/2013 1:43:04 PM"), map: "DEFAULT_cms_country_CountryLastModified")
+  CountryTwoLetterCode   String?     @db.NVarChar(2)
+  CountryThreeLetterCode String?     @db.NVarChar(3)
+  CMS_State              CMS_State[]
+
+  @@index([CountryDisplayName], map: "IX_CMS_Country_CountryDisplayName", clustered: true)
+}
+
+model CMS_EventLog {
+  EventID          Int       @id(clustered: false, map: "PK_CMS_EventLog") @unique(map: "IX_CMS_EventLog_EventID_SiteID") @default(autoincrement())
+  EventType        String    @db.NVarChar(5)
+  EventTime        DateTime
+  Source           String    @db.NVarChar(100)
+  EventCode        String    @db.NVarChar(100)
+  UserID           Int?
+  UserName         String?   @db.NVarChar(250)
+  IPAddress        String?   @db.NVarChar(100)
+  NodeID           Int?
+  DocumentName     String?   @db.NVarChar(100)
+  EventDescription String?   @db.NVarChar(Max)
+  SiteID           Int?
+  EventUrl         String?   @db.NVarChar(2000)
+  EventMachineName String?   @db.NVarChar(100)
+  EventUserAgent   String?   @db.NVarChar(Max)
+  EventUrlReferrer String?   @db.NVarChar(2000)
+  CMS_Site         CMS_Site? @relation(fields: [SiteID], references: [SiteID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_Event_SiteID_CMS_Site")
+
+  @@index([EventTime(sort: Desc)], map: "IX_CMS_EventLog_EventTime", clustered: true)
+  @@index([SiteID, EventType, Source, EventCode], map: "IX_CMS_EventLog_SiteID_EventType_Source_EventCode")
+}
+
+model CMS_Role {
+  RoleID                   Int            @id(clustered: false, map: "PK_CMS_Role") @default(autoincrement())
+  RoleDisplayName          String         @db.NVarChar(100)
+  RoleName                 String         @db.NVarChar(100)
+  RoleDescription          String?        @db.NVarChar(Max)
+  SiteID                   Int?
+  RoleGUID                 String         @db.UniqueIdentifier
+  RoleLastModified         DateTime
+  RoleGroupID              Int?
+  RoleIsGroupAdministrator Boolean?
+  RoleIsDomain             Boolean?
+  CMS_Site                 CMS_Site?      @relation(fields: [SiteID], references: [SiteID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_Role_SiteID_CMS_SiteID")
+  CMS_UserRole             CMS_UserRole[]
+
+  @@unique([SiteID, RoleName, RoleGroupID], map: "IX_CMS_Role_SiteID_RoleName_RoleGroupID")
+  @@index([RoleGroupID], map: "IX_CMS_Role_RoleGroupID")
+  @@index([SiteID, RoleID], map: "IX_CMS_Role_SiteID_RoleID")
+  @@index([SiteID, RoleName, RoleDisplayName], map: "IX_CMS_Role_SiteID_RoleName_RoleDisplayName", clustered: true)
+}
+
+model CMS_Session {
+  SessionIdentificator String    @id(clustered: false, map: "PK_CMS_Session") @db.NVarChar(200)
+  SessionUserID        Int?
+  SessionLocation      String?   @db.NVarChar(450)
+  SessionLastActive    DateTime  @default(dbgenerated("9/9/2008 3:44:26 PM"), map: "DEFAULT_CMS_Session_SessionLastActive")
+  SessionLastLogon     DateTime?
+  SessionExpires       DateTime  @default(dbgenerated("9/9/2008 3:45:44 PM"), map: "DEFAULT_CMS_Session_SessionExpires")
+  SessionExpired       Boolean   @default(false, map: "DEFAULT_CMS_Session_SessionExpired")
+  SessionSiteID        Int?
+  SessionUserIsHidden  Boolean
+  SessionFullName      String?   @db.NVarChar(450)
+  SessionEmail         String?   @db.NVarChar(100)
+  SessionUserName      String?   @db.NVarChar(100)
+  SessionNickName      String?   @db.NVarChar(200)
+  SessionUserCreated   DateTime?
+  SessionContactID     Int?
+  CMS_Site             CMS_Site? @relation(fields: [SessionSiteID], references: [SiteID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_Session_SessionSiteID_CMS_Site")
+  CMS_User             CMS_User? @relation(fields: [SessionUserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_Session_SessionUserID_CMS_User")
+
+  @@index([SessionLocation], map: "IX_CMS_Session_SessionLocation", clustered: true)
+  @@index([SessionSiteID], map: "IX_CMS_Session_SessionSiteID")
+  @@index([SessionUserID], map: "IX_CMS_Session_SessionUserID")
+  @@index([SessionUserIsHidden], map: "IX_CMS_Session_SessionUserIsHidden")
+}
+
+model CMS_SettingsCategory {
+  CategoryID                 Int                    @id(clustered: false, map: "PK_CMS_SettingsCategory") @default(autoincrement())
+  CategoryDisplayName        String                 @default("", map: "DEFAULT_CMS_SettingsCategory_CategoryDisplayName") @db.NVarChar(200)
+  CategoryOrder              Int?
+  CategoryName               String?                @db.NVarChar(100)
+  CategoryParentID           Int?
+  CategoryIDPath             String?                @db.NVarChar(450)
+  CategoryLevel              Int?
+  CategoryChildCount         Int?
+  CategoryIconPath           String?                @db.NVarChar(200)
+  CategoryIsGroup            Boolean?               @default(false, map: "DEFAULT_CMS_SettingsCategory_CategoryIsGroup")
+  CategoryIsCustom           Boolean?               @default(false, map: "DEFAULT_CMS_SettingsCategory_CategoryIsCustom")
+  CategoryResourceID         Int?
+  CMS_SettingsCategory       CMS_SettingsCategory?  @relation("CMS_SettingsCategoryToCMS_SettingsCategory", fields: [CategoryParentID], references: [CategoryID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_SettingsCategory_CMS_SettingsCategory1")
+  other_CMS_SettingsCategory CMS_SettingsCategory[] @relation("CMS_SettingsCategoryToCMS_SettingsCategory")
+  CMS_SettingsKey            CMS_SettingsKey[]
+
+  @@index([CategoryOrder], map: "IX_CMS_SettingsCategory_CategoryOrder", clustered: true)
+  @@index([CategoryParentID], map: "IX_CMS_SettingsCategory_CategoryParentID")
+  @@index([CategoryResourceID], map: "IX_CMS_SettingsCategory_CategoryResourceID")
+}
+
+model CMS_SettingsKey {
+  KeyID                  Int                   @id(clustered: false, map: "PK_CMS_SettingsKey") @default(autoincrement())
+  KeyName                String                @default("", map: "DEFAULT_CMS_SettingsKey_KeyName") @db.NVarChar(100)
+  KeyDisplayName         String                @default("", map: "DEFAULT_CMS_SettingsKey_KeyDisplayName") @db.NVarChar(200)
+  KeyDescription         String?               @db.NVarChar(Max)
+  KeyValue               String?               @db.NVarChar(Max)
+  KeyType                String                @default("", map: "DEFAULT_CMS_SettingsKey_KeyType") @db.NVarChar(50)
+  KeyCategoryID          Int?
+  SiteID                 Int?
+  KeyGUID                String                @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_CMS_SettingsKey_KeyGUID") @db.UniqueIdentifier
+  KeyLastModified        DateTime
+  KeyOrder               Int?
+  KeyDefaultValue        String?               @db.NVarChar(Max)
+  KeyValidation          String?               @db.NVarChar(255)
+  KeyEditingControlPath  String?               @db.NVarChar(200)
+  KeyLoadGeneration      Int                   @default(0, map: "DEFAULT_CMS_SettingsKey_KeyLoadGeneration")
+  KeyIsGlobal            Boolean?              @default(false, map: "DEFAULT_CMS_SettingsKey_KeyIsGlobal")
+  KeyIsCustom            Boolean?              @default(false, map: "DEFAULT_CMS_SettingsKey_KeyIsCustom")
+  KeyIsHidden            Boolean?              @default(false, map: "DEFAULT_CMS_SettingsKey_KeyIsHidden")
+  KeyFormControlSettings String?               @db.NVarChar(Max)
+  KeyExplanationText     String?               @default("N'", map: "DEFAULT_CMS_SettingsKey_KeyExplanationText") @db.NVarChar(Max)
+  CMS_SettingsCategory   CMS_SettingsCategory? @relation(fields: [KeyCategoryID], references: [CategoryID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_SettingsKey_KeyCategoryID_CMS_SettingsCategory")
+  CMS_Site               CMS_Site?             @relation(fields: [SiteID], references: [SiteID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_SettingsKey_SiteID_CMS_Site")
+
+  @@index([KeyCategoryID], map: "IX_CMS_SettingsKey_KeyCategoryID")
+  @@index([KeyLoadGeneration, SiteID], map: "IX_CMS_SettingsKey_KeyLoadGeneration_SiteID", clustered: true)
+  @@index([SiteID, KeyName], map: "IX_CMS_SettingsKey_SiteID_KeyName")
+}
+
+model CMS_Site {
+  SiteID                      Int               @id(clustered: false, map: "PK_CMS_Site") @default(autoincrement())
+  SiteName                    String            @default("", map: "DEFAULT_CMS_Site_SiteName") @db.NVarChar(100)
+  SiteDisplayName             String            @default("", map: "DEFAULT_CMS_Site_SiteDisplayName") @db.NVarChar(200)
+  SiteDescription             String?           @db.NVarChar(Max)
+  SiteStatus                  String            @default("", map: "DEFAULT_CMS_Site_SiteStatus") @db.NVarChar(20)
+  SiteDomainName              String            @default("", map: "DEFAULT_CMS_Site_SiteDomainName") @db.NVarChar(400)
+  SiteDefaultStylesheetID     Int?
+  SiteDefaultVisitorCulture   String?           @db.NVarChar(50)
+  SiteDefaultEditorStylesheet Int?
+  SiteGUID                    String            @db.UniqueIdentifier
+  SiteLastModified            DateTime
+  SiteIsOffline               Boolean?
+  SiteOfflineRedirectURL      String?           @db.NVarChar(400)
+  SiteOfflineMessage          String?           @db.NVarChar(Max)
+  CMS_Category                CMS_Category[]
+  CMS_EventLog                CMS_EventLog[]
+  CMS_Role                    CMS_Role[]
+  CMS_Session                 CMS_Session[]
+  CMS_SettingsKey             CMS_SettingsKey[]
+
+  @@index([SiteDefaultEditorStylesheet], map: "IX_CMS_Site_SiteDefaultEditorStylesheet")
+  @@index([SiteDefaultStylesheetID], map: "IX_CMS_Site_SiteDefaultStylesheetID")
+  @@index([SiteDisplayName], map: "IX_CMS_Site_SiteDisplayName", clustered: true)
+  @@index([SiteDomainName, SiteStatus], map: "IX_CMS_Site_SiteDomainName_SiteStatus")
+  @@index([SiteName], map: "IX_CMS_Site_SiteName")
+}
+
+model CMS_State {
+  StateID           Int         @id(clustered: false, map: "PK_CMS_State") @default(autoincrement())
+  StateDisplayName  String      @default("", map: "DEFAULT_CMS_State_StateDisplayName") @db.NVarChar(200)
+  StateName         String      @default("", map: "DEFAULT_CMS_State_StateName") @db.NVarChar(200)
+  StateCode         String?     @db.NVarChar(100)
+  CountryID         Int
+  StateGUID         String      @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_CMS_State_StateGUID") @db.UniqueIdentifier
+  StateLastModified DateTime
+  CMS_Country       CMS_Country @relation(fields: [CountryID], references: [CountryID], onUpdate: NoAction, map: "FK_CMS_State_CountryID_CMS_Country")
+
+  @@index([CountryID], map: "IX_CMS_State_CountryID")
+  @@index([StateDisplayName], map: "IX_CMS_State_CountryID_StateDisplayName", clustered: true)
+}
+
+model CMS_TimeZone {
+  TimeZoneID            Int                @id(clustered: false, map: "PK_CMS_TimeZone") @default(autoincrement())
+  TimeZoneName          String             @db.NVarChar(200)
+  TimeZoneDisplayName   String             @db.NVarChar(200)
+  TimeZoneGMT           Float              @default(0, map: "DEFAULT_CMS_TimeZone_TimeZoneGMT")
+  TimeZoneDaylight      Boolean?           @default(false, map: "DEFAULT_CMS_TimeZone_TimeZoneDaylight")
+  TimeZoneRuleStartIn   DateTime
+  TimeZoneRuleStartRule String             @db.NVarChar(200)
+  TimeZoneRuleEndIn     DateTime
+  TimeZoneRuleEndRule   String             @db.NVarChar(200)
+  TimeZoneGUID          String             @db.UniqueIdentifier
+  TimeZoneLastModified  DateTime
+  CMS_UserSettings      CMS_UserSettings[]
+
+  @@index([TimeZoneDisplayName], map: "IX_CMS_TimeZone_TimeZoneDisplayName", clustered: true)
+}
+
+model CMS_User {
+  UserID                                                            Int                @id(map: "PK_CMS_User") @default(autoincrement())
+  UserName                                                          String             @unique(map: "IX_CMS_User_UserName") @default("", map: "DEFAULT_CMS_User_UserName") @db.NVarChar(100)
+  FirstName                                                         String?            @db.NVarChar(100)
+  MiddleName                                                        String?            @db.NVarChar(100)
+  LastName                                                          String?            @db.NVarChar(100)
+  FullName                                                          String?            @db.NVarChar(450)
+  Email                                                             String?            @db.NVarChar(100)
+  UserPassword                                                      String             @default("N'", map: "DEFAULT_CMS_User_UserPassword") @db.NVarChar(100)
+  PreferredCultureCode                                              String?            @db.NVarChar(10)
+  PreferredUICultureCode                                            String?            @db.NVarChar(10)
+  UserEnabled                                                       Boolean            @default(false, map: "DEFAULT_CMS_User_UserEnabled")
+  UserIsEditor                                                      Boolean            @default(false, map: "DEFAULT_CMS_User_UserIsEditor")
+  UserIsGlobalAdministrator                                         Boolean            @default(false, map: "DEFAULT_CMS_User_UserIsGlobalAdministrator")
+  UserIsExternal                                                    Boolean?           @default(false, map: "DEFAULT_CMS_User_UserIsExternal")
+  UserPasswordFormat                                                String?            @db.NVarChar(10)
+  UserCreated                                                       DateTime?
+  LastLogon                                                         DateTime?
+  UserStartingAliasPath                                             String?            @db.NVarChar(200)
+  UserGUID                                                          String             @unique(map: "IX_CMS_User_UserGUID") @db.UniqueIdentifier
+  UserLastModified                                                  DateTime
+  UserLastLogonInfo                                                 String?            @db.NVarChar(Max)
+  UserIsHidden                                                      Boolean?           @default(false, map: "DEFAULT_CMS_User_UserIsHidden")
+  UserVisibility                                                    String?            @db.NVarChar(Max)
+  UserIsDomain                                                      Boolean?           @default(false, map: "DEFAULT_CMS_User_UserIsDomain")
+  UserHasAllowedCultures                                            Boolean?
+  UserSiteManagerDisabled                                           Boolean?           @default(false, map: "DEFAULT_CMS_User_UserSiteManagerDisabled")
+  UserTokenID                                                       String?            @db.UniqueIdentifier
+  UserMFRequired                                                    Boolean?
+  UserTokenIteration                                                Int?
+  BP_DOB                                                            String?            @db.NVarChar(12)
+  BP_SubscribeNews                                                  Boolean?           @default(true, map: "DEFAULT_CMS_User_BP_SubscribeNews")
+  BP_SubscribeMag                                                   Boolean?           @default(true, map: "DEFAULT_CMS_User_BP_SubscribeMag")
+  CMS_Category                                                      CMS_Category[]
+  CMS_Session                                                       CMS_Session[]
+  CMS_UserRole                                                      CMS_UserRole[]
+  CMS_UserSettings_CMS_UserSettings_UserActivatedByUserIDToCMS_User CMS_UserSettings[] @relation("CMS_UserSettings_UserActivatedByUserIDToCMS_User")
+  CMS_UserSettings_CMS_UserSettings_UserSettingsUserGUIDToCMS_User  CMS_UserSettings[] @relation("CMS_UserSettings_UserSettingsUserGUIDToCMS_User")
+  CMS_UserSettings_CMS_UserSettings_UserSettingsUserIDToCMS_User    CMS_UserSettings?  @relation("CMS_UserSettings_UserSettingsUserIDToCMS_User")
+
+  @@index([Email], map: "IX_CMS_User_Email")
+  @@index([FullName], map: "IX_CMS_User_FullName")
+  @@index([UserEnabled, UserIsHidden], map: "IX_CMS_User_UserEnabled_UserIsHidden")
+  @@index([UserIsEditor], map: "IX_CMS_User_UserIsEditor")
+  @@index([UserIsGlobalAdministrator], map: "IX_CMS_User_UserIsGlobalAdministrator")
+}
+
+model CMS_UserRole {
+  UserID     Int       @default(0, map: "DEFAULT_CMS_UserRole_UserID")
+  RoleID     Int       @default(0, map: "DEFAULT_CMS_UserRole_RoleID")
+  ValidTo    DateTime?
+  UserRoleID Int       @id(map: "PK_CMS_UserRole") @default(autoincrement())
+  CMS_Role   CMS_Role  @relation(fields: [RoleID], references: [RoleID], onUpdate: NoAction, map: "FK_CMS_UserRole_RoleID_CMS_Role")
+  CMS_User   CMS_User  @relation(fields: [UserID], references: [UserID], onUpdate: NoAction, map: "FK_CMS_UserRole_UserID_CMS_User")
+
+  @@unique([UserID, RoleID], map: "IX_CMS_UserRole_UserID_RoleID")
+  @@index([RoleID], map: "IX_CMS_UserRole_RoleID")
+  @@index([RoleID, ValidTo, UserID], map: "IX_CMS_UserRole_UserID")
+}
+
+model CMS_Users {
+  UserID                    Int       @id(map: "PK__CMS_User__1788CCAC59EE28A7") @default(autoincrement())
+  UserName                  String    @unique(map: "UQ__CMS_User__C9F28456DC256CB6") @db.NVarChar(255)
+  FirstName                 String?   @db.NVarChar(255)
+  MiddleName                String?   @db.NVarChar(255)
+  LastName                  String?   @db.NVarChar(255)
+  FullName                  String?   @db.NVarChar(255)
+  Email                     String?   @db.NVarChar(255)
+  UserPassword              String?   @db.NVarChar(255)
+  UserEnabled               Boolean?
+  UserIsEditor              Boolean?
+  UserIsGlobalAdministrator Boolean?
+  UserIsExternal            Boolean?
+  UserPasswordFormat        String?   @db.NVarChar(255)
+  UserCreated               DateTime? @db.DateTimeOffset
+  LastLogon                 DateTime? @db.DateTimeOffset
+  UserStartingAliasPath     String?   @db.NVarChar(255)
+  UserGUID                  String?   @db.Char(36)
+  UserLastModified          DateTime? @db.DateTimeOffset
+  UserLastLogonInfo         DateTime? @db.DateTimeOffset
+  UserIsHidden              Boolean?
+  UserTokenID               String?   @db.Char(36)
+  BP_DOB                    String?   @db.NVarChar(255)
+  BP_SubscribeNews          Boolean?
+  BP_SubscribeMag           Boolean?
+  createdAt                 DateTime  @db.DateTimeOffset
+  updatedAt                 DateTime  @db.DateTimeOffset
+}
+
+model CMS_UserSettings {
+  UserSettingsID                                            Int           @id(map: "PK_CMS_UserSettings") @default(autoincrement())
+  UserNickName                                              String?       @db.NVarChar(200)
+  UserPicture                                               String?       @db.NVarChar(200)
+  UserSignature                                             String?       @db.NVarChar(Max)
+  UserURLReferrer                                           String?       @db.NVarChar(450)
+  UserCampaign                                              String?       @db.NVarChar(200)
+  UserMessagingNotificationEmail                            String?       @db.NVarChar(200)
+  UserCustomData                                            String?       @db.NVarChar(Max)
+  UserRegistrationInfo                                      String?       @db.NVarChar(Max)
+  UserPreferences                                           String?       @db.NVarChar(Max)
+  UserActivationDate                                        DateTime?
+  UserActivatedByUserID                                     Int?
+  UserTimeZoneID                                            Int?
+  UserAvatarID                                              Int?
+  UserBadgeID                                               Int?
+  UserActivityPoints                                        Int?
+  UserForumPosts                                            Int?
+  UserBlogComments                                          Int?
+  UserGender                                                Int?
+  UserDateOfBirth                                           DateTime?
+  UserMessageBoardPosts                                     Int?
+  UserSettingsUserGUID                                      String        @default(dbgenerated("00000000-0000-0000-0000-000000000000"), map: "DEFAULT_CMS_UserSettings_UserSettingsUserGUID") @db.UniqueIdentifier
+  UserSettingsUserID                                        Int           @unique(map: "IX_CMS_UserSettings_UserSettingsUserID") @default(0, map: "DEFAULT_CMS_UserSettings_UserSettingsUserID")
+  WindowsLiveID                                             String?       @db.NVarChar(50)
+  UserBlogPosts                                             Int?
+  UserWaitingForApproval                                    Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_UserWaitingForApproval")
+  UserDialogsConfiguration                                  String?       @db.NVarChar(Max)
+  UserDescription                                           String?       @db.NVarChar(Max)
+  UserUsedWebParts                                          String?
+  UserUsedWidgets                                           String?
+  UserFacebookID                                            String?       @db.NVarChar(100)
+  UserAuthenticationGUID                                    String?       @db.UniqueIdentifier
+  UserSkype                                                 String?       @db.NVarChar(100)
+  UserIM                                                    String?       @db.NVarChar(100)
+  UserPhone                                                 String?       @db.NVarChar(26)
+  UserPosition                                              String?       @db.NVarChar(200)
+  UserBounces                                               Int?
+  UserLinkedInID                                            String?       @db.NVarChar(100)
+  UserLogActivities                                         Boolean?
+  UserPasswordRequestHash                                   String?       @db.NVarChar(100)
+  UserInvalidLogOnAttempts                                  Int?          @default(0, map: "DEFAULT_CMS_UserSettings_UserInvalidLogOnAttempts")
+  UserInvalidLogOnAttemptsHash                              String?       @db.NVarChar(100)
+  UserAvatarType                                            String?       @db.NVarChar(200)
+  UserAccountLockReason                                     Int?          @default(0, map: "DEFAULT_CMS_UserSettings_UserAccountLockReason")
+  UserPasswordLastChanged                                   DateTime?
+  UserDataComUser                                           String?       @db.NVarChar(200)
+  UserDataComPassword                                       String?       @db.NVarChar(200)
+  UserShowIntroductionTile                                  Boolean?
+  BP_G_Salutation                                           String?       @db.NVarChar(50)
+  BP_G_Suffix                                               String?       @default("N'-Select-'", map: "DEFAULT_CMS_UserSettings_BP_G_Suffix") @db.NVarChar(50)
+  BP_G_Marital                                              String?       @default("N'- Select -'", map: "DEFAULT_CMS_UserSettings_BP_G_Marital") @db.NVarChar(50)
+  BP_G_Alt_Email                                            String?       @db.NVarChar(200)
+  BP_G_Home_Phone                                           String?       @db.NVarChar(20)
+  BP_G_Text                                                 Int?
+  BP_C_Baptist                                              Int?
+  BP_C_Church                                               Int?
+  BP_P_Number                                               String?       @db.NVarChar(200)
+  BP_P_GivenName                                            String?       @db.NVarChar(150)
+  BP_P_Surname                                              String?       @db.NVarChar(100)
+  BP_P_Nationality                                          String?       @db.NVarChar(200)
+  BP_P_DOB                                                  String?       @db.NVarChar(12)
+  BP_P_POB                                                  String?       @db.NVarChar(100)
+  BP_P_Gender                                               String?       @default("N'0'", map: "DEFAULT_CMS_UserSettings_BP_P_Gender") @db.NVarChar(20)
+  BP_P_Date_Issued                                          String?       @db.NVarChar(12)
+  BP_P_Date_Exp                                             String?       @db.NVarChar(12)
+  BP_P_Airport                                              String?       @db.NVarChar(200)
+  BP_P_PassportImage                                        String?       @db.UniqueIdentifier
+  BP_H_Medication                                           Int?          @default(0, map: "DEFAULT_CMS_UserSettings_BP_H_Medication")
+  BP_H_Allergies                                            Int?          @default(0, map: "DEFAULT_CMS_UserSettings_BP_H_Allergies")
+  BP_H_Ailments                                             Int?          @default(0, map: "DEFAULT_CMS_UserSettings_BP_H_Ailments")
+  BP_H_Disabilities                                         Int?          @default(0, map: "DEFAULT_CMS_UserSettings_BP_H_Disabilities")
+  BP_H_Lifting                                              Int?          @default(0, map: "DEFAULT_CMS_UserSettings_BP_H_Lifting")
+  BP_H_Abstain_Alc                                          Int?          @default(1, map: "DEFAULT_CMS_UserSettings_BP_H_Abstain_Alc")
+  BP_H_Abstain_Alc_Reason                                   String?       @db.NVarChar(Max)
+  BP_H_Abstain_Tob                                          Int?          @default(1, map: "DEFAULT_CMS_UserSettings_BP_H_Abstain_Tob")
+  BP_H_Abstain_Tob_Reason                                   String?       @db.NVarChar(Max)
+  BP_H_Tetanus                                              Int?          @default(0, map: "DEFAULT_CMS_UserSettings_BP_H_Tetanus")
+  BP_H_Tetanus_Year                                         String?       @db.NVarChar(12)
+  BP_G_Spouse                                               String?       @db.NVarChar(200)
+  BP_TermsDate                                              DateTime?
+  BP_I_Health                                               String?       @db.NVarChar(200)
+  BP_I_Agree                                                Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_BP_I_Agree")
+  BP_I_FName                                                String?       @db.NVarChar(200)
+  BP_I_MName                                                String?       @db.NVarChar(200)
+  BP_I_LName                                                String?       @db.NVarChar(200)
+  BP_I_Relation                                             String?       @db.NVarChar(200)
+  BP_H_Medication_Reason                                    String?       @db.NVarChar(200)
+  BP_H_Allergies_Reason                                     String?       @db.NVarChar(200)
+  BP_H_Aliments_Reason                                      String?       @db.NVarChar(200)
+  BP_H_Disabilities_Reason                                  String?       @db.NVarChar(200)
+  BP_H_Lifting_Reason                                       String?       @db.NVarChar(200)
+  BP_Interests                                              String?       @db.NVarChar(Max)
+  BP_G_Mob_Phone                                            String?       @db.NVarChar(20)
+  BP_BGCheckDate                                            DateTime?     @db.Date
+  BP_Regions                                                Int?
+  BP_PrimaryAddress                                         Int?
+  BP_C_ChurchOther                                          Int?
+  BP_G_Saved                                                Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_BP_G_Saved")
+  BP_C_Saved                                                Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_BP_C_Saved")
+  BP_P_Saved                                                Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_BP_P_Saved")
+  BP_H_Saved                                                Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_BP_H_Saved")
+  BP_I_Saved                                                Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_BP_I_Saved")
+  UserDashboardApplications                                 String?       @db.NVarChar(Max)
+  BP_VolunteerID                                            Int?
+  BPHasOfficialPhoto                                        Boolean?      @default(false, map: "DEFAULT_CMS_UserSettings_BPHasOfficialPhoto")
+  BP_BGCheckText                                            String?       @db.NVarChar(200)
+  BP_Eligibility_Settings                                   String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_Eligibility_Settings") @db.NVarChar(400)
+  BP_BadgeFlagline                                          String?       @db.NVarChar(200)
+  PrintBadgeURL                                             String?       @default("N'", map: "DEFAULT_CMS_UserSettings_PrintBadgeURL") @db.NVarChar(200)
+  PrintProfileURL                                           String?       @default("N'", map: "DEFAULT_CMS_UserSettings_PrintProfileURL") @db.NVarChar(200)
+  BP_C_ChurchName                                           String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_C_ChurchName") @db.NVarChar(200)
+  BP_C_ChurchCity                                           String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_C_ChurchCity") @db.NVarChar(200)
+  BP_C_ChurchState                                          String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_C_ChurchState") @db.NVarChar(200)
+  BP_C_ChurchPhone                                          String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_C_ChurchPhone") @db.NVarChar(200)
+  BP_P_AirportName                                          String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_P_AirportName") @db.NVarChar(300)
+  BP_P_Profession                                           String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_P_Profession") @db.NVarChar(300)
+  BP_H_EPIPen                                               Boolean?
+  BP_H_BreathingIssues                                      Boolean?
+  BP_H_BreathingIssues_Desc                                 String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_H_BreathingIssues_Desc") @db.NVarChar(Max)
+  BP_H_BreathingIssues_Items                                String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_H_BreathingIssues_Items") @db.NVarChar(300)
+  BP_H_Seizures                                             Boolean?
+  BP_H_Diabetes                                             Boolean?
+  BP_H_Diabetes_OralMed                                     Boolean?
+  BP_H_Diabetes_OralMed_Other                               String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_H_Diabetes_OralMed_Other") @db.NVarChar(200)
+  BP_H_BloodPressure                                        Boolean?
+  BP_H_BloodPressure_Med                                    Boolean?
+  BP_H_BloodPressure_Med_Other                              String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_H_BloodPressure_Med_Other") @db.NVarChar(200)
+  BP_H_HeartDisease                                         Boolean?
+  BP_H_HeartDisease_Events                                  String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_H_HeartDisease_Events") @db.NVarChar(300)
+  BP_H_All                                                  String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_H_All") @db.NVarChar(Max)
+  BP_Disaster_Event                                         String?       @default("N'", map: "DEFAULT_CMS_UserSettings_BP_Disaster_Event") @db.NVarChar(Max)
+  BP_G_Address                                              String?       @db.NVarChar(100)
+  BP_G_AddressLine2                                         String?       @db.NVarChar(50)
+  BP_G_AddressCity                                          String?       @db.NVarChar(50)
+  BP_G_AddressState                                         String?       @db.NVarChar(50)
+  BP_G_AddressZip                                           String?       @db.NVarChar(50)
+  CMS_User_CMS_UserSettings_UserActivatedByUserIDToCMS_User CMS_User?     @relation("CMS_UserSettings_UserActivatedByUserIDToCMS_User", fields: [UserActivatedByUserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_UserSettings_UserActivatedByUserID_CMS_User")
+  CMS_User_CMS_UserSettings_UserSettingsUserGUIDToCMS_User  CMS_User      @relation("CMS_UserSettings_UserSettingsUserGUIDToCMS_User", fields: [UserSettingsUserGUID], references: [UserGUID], onUpdate: NoAction, map: "FK_CMS_UserSettings_UserSettingsUserGUID_CMS_User")
+  CMS_User_CMS_UserSettings_UserSettingsUserIDToCMS_User    CMS_User      @relation("CMS_UserSettings_UserSettingsUserIDToCMS_User", fields: [UserSettingsUserID], references: [UserID], onUpdate: NoAction, map: "FK_CMS_UserSettings_UserSettingsUserID_CMS_User")
+  CMS_TimeZone                                              CMS_TimeZone? @relation(fields: [UserTimeZoneID], references: [TimeZoneID], onDelete: NoAction, onUpdate: NoAction, map: "FK_CMS_UserSettings_UserTimeZoneID_CMS_TimeZone")
+
+  @@index([UserActivatedByUserID], map: "IX_CMS_UserSettings_UserActivatedByUserID")
+  @@index([UserAuthenticationGUID], map: "IX_CMS_UserSettings_UserAuthenticationGUID")
+  @@index([UserAvatarID], map: "IX_CMS_UserSettings_UserAvatarID")
+  @@index([UserBadgeID], map: "IX_CMS_UserSettings_UserBadgeID")
+  @@index([UserFacebookID], map: "IX_CMS_UserSettings_UserFacebookID")
+  @@index([UserGender], map: "IX_CMS_UserSettings_UserGender")
+  @@index([UserNickName], map: "IX_CMS_UserSettings_UserNickName")
+  @@index([UserPasswordRequestHash], map: "IX_CMS_UserSettings_UserPasswordRequestHash")
+  @@index([UserSettingsUserGUID], map: "IX_CMS_UserSettings_UserSettingsUserGUID")
+  @@index([UserTimeZoneID], map: "IX_CMS_UserSettings_UserTimeZoneID")
+  @@index([UserWaitingForApproval], map: "IX_CMS_UserSettings_UserWaitingForApproval")
+  @@index([WindowsLiveID], map: "IX_CMS_UserSettings_WindowsLiveID")
+}
+
+model Events_Attendee {
+  AttendeeID           Int      @id(clustered: false, map: "PK_Events_Attendee") @default(autoincrement())
+  AttendeeEmail        String   @db.NVarChar(250)
+  AttendeeFirstName    String?  @db.NVarChar(100)
+  AttendeeLastName     String?  @db.NVarChar(100)
+  AttendeePhone        String?  @db.NVarChar(50)
+  AttendeeEventNodeID  Int
+  AttendeeGUID         String   @db.UniqueIdentifier
+  AttendeeLastModified DateTime
+
+  @@index([AttendeeEmail, AttendeeFirstName, AttendeeLastName], map: "IX_Events_Attendee_AttendeeEmail_AttendeeFirstName_AttendeeLastName", clustered: true)
+  @@index([AttendeeEventNodeID], map: "IX_Events_Attendee_AttendeeEventNodeID")
+}
+
+model ReactJS_Certifications {
+  CertificationID         Int       @id(map: "PK_ReactJS_Certifications") @default(autoincrement())
+  Certification           String    @db.NChar(100)
+  CertificationUserGUID   String    @db.VarChar(50)
+  CertificationExpiration DateTime? @db.Date
+}
+
+model ReactJS_Orders {
+  OrderID        Int       @id(map: "PK__ReactJS___C3905BAF7FC164C6") @default(autoincrement())
+  OrderDate      DateTime? @db.DateTimeOffset
+  Products       String?   @db.NVarChar(255)
+  PaidToDate     Decimal?  @db.Decimal(18, 0)
+  Balance        Decimal?  @db.Decimal(18, 0)
+  UserID         Int?
+  OrderModified  DateTime? @db.DateTimeOffset
+  PaymentHistory String?   @db.NVarChar(255)
+  Notes          String?   @db.NVarChar(255)
+  createdAt      DateTime  @db.DateTimeOffset
+  updatedAt      DateTime  @db.DateTimeOffset
+}

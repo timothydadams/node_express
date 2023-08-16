@@ -1,6 +1,7 @@
-import * as services from '../services/users.service.js';
+import * as services from '../services/disasterLocation.service.js';
 import winstonLogger from '../middleware/logging.middleware.js';
 
+/*
 export const get_one = async (req, res, next) => {
   try {
     const result = await services.getById(req.params.id);
@@ -11,6 +12,7 @@ export const get_one = async (req, res, next) => {
   }
 }
 
+
 export const get_all = async (req, res, next) => {
   try {
     const result = await services.getAllWithCount(req.query.page);
@@ -20,15 +22,17 @@ export const get_all = async (req, res, next) => {
       next(err);
   }
 }
+*/
 
 export const create = async (req, res, next) => {
   try {
-    const {user, error} = await services.create(req.body);
+    console.log(JSON.stringify(req.body));
+    const {Event, error} = await services.create(req.body);
 
     if (error) {
       res.status(400).json({error});
     } else {
-      res.json({user});
+      res.json({Event});
     }
     
   } catch (err) {
@@ -37,6 +41,7 @@ export const create = async (req, res, next) => {
   }
 }
 
+/*
 export const update = async (req, res, next) => {
   try {
     const {user, error} =  await services.update(req.params.id, req.body);
@@ -59,3 +64,4 @@ export const remove = async (req, res, next) => {
     next(err);
   }
 }
+*/
