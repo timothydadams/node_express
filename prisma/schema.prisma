@@ -8,9 +8,9 @@ datasource db {
 }
 
 model BOM_DisasterLocation {
-  ItemID          Int       @id @default(9999)
-  ItemCreatedWhen DateTime? @default(dbgenerated("GETDATE()"))
-  ItemGUID        String    @default(dbgenerated("NEWID()")) @db.UniqueIdentifier
+  ItemID          Int       @id @default(autoincrement())
+  ItemCreatedWhen DateTime? @default(now())
+  ItemGUID        String    @default(uuid()) @db.UniqueIdentifier
   Event           String    @db.NVarChar(300)
 }
 
