@@ -10,31 +10,35 @@ const prisma = new PrismaClient()
 const loggingEnabled = true;
 
 export const getById = async (id) => {
-  const res = await Users.findByPk(id);
+  const res = await prisma.bOM_DisasterLocation.findUnique({
+    where: {
+      "ItemGUID":id,
+    }
+  });
 
   loggingEnabled && winstonLogger.info(JSON.stringify(res));
 
   if (res) {
-    return {user:res};
+    return {event:res};
   } else {
-    return {error:{message:"failed to retrieve user"}};
+    return {error:{message:"failed to retrieve event"}};
   }
 
 }
 
 export const getAllWithCount = async (page = 1) => {
 
-  const {count, rows} = await Users.findAndCountAll({
-    ...helpers.paginate({ page , pageSize: general.listPerPage })
-  });
+  const res = await prisma.bOM_DisasterLocation.findMany();
 
-  const meta = {"page":Number(page)};
-
-  return {
-    count,
-    users:rows,
-    ...(rows.length > 0 && meta)
+  if (res) {
+    return {
+      "events": res,
+      "count":res.length,
+    }
+  } else {
+    return {error:{message:"failed to retrieve events"}};
   }
+  
 }
 
 export const create = async ({
@@ -54,34 +58,36 @@ export const create = async ({
 }
 
 export const update = async (id, {
-  firstName,
-  lastName
+  Event
 }) => {
-  const res = await Users.update({firstName, lastName},{
-    where:{id},
+  const res = await prisma.bOM_DisasterLocation.update({
+    where:{
+      "ItemGUID": id,
+    },
+    data: {
+      Event
+    }
   });
-  let resval = res[0];
 
-  if (resval === 1) {
-    loggingEnabled && winstonLogger.info(`updated user ${id}`);
-    let updatedUser = await Users.findByPk(id);
-    return {user:updatedUser};
+  if (res) {
+    loggingEnabled && winstonLogger.info(`updated event ${id}`);
+    return {event:res};
   } else {
-    winstonLogger.info(`error updating user ${id}`);
-    return {error:{message: "update failed, user does not exist"}};
+    winstonLogger.info(`error updating event ${id}`);
+    return {error:{message: "update failed, event does not exist"}};
   }
 }
 
 export const remove = async (id) => {
 
-  const res = await Users.destroy({
-    where:{id},
+  const { count } = await prisma.bOM_DisasterLocation.delete({
+    where:{"ItemGUID":id},
   });
 
   let returnObj = {};
 
-  if (res === 1 ) {
-    returnObj["message"] = `user ${id} deleted`;
+  if ( count != 0 ) {
+    returnObj["message"] = `event ${id} deleted`;
   } else {
     returnObj["error"] = {message: 'delete failed'}
   }

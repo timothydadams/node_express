@@ -1,3 +1,5 @@
+/* USING PRISMA, see ../../prisma/prisma.schema
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../configs/db.config.js";
 
@@ -23,3 +25,5 @@ export const Users = sequelize.define('Users', {
     paranoid:true,
   }
 );
+
+*/
