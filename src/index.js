@@ -3,6 +3,7 @@ import winstonLogger, { morganLogger } from './middleware/logging.middleware.js'
 //import { sequelize } from './configs/db.config.js';
 //import { usersRouter } from './routes/users.route.js';
 import router from './routes/index.js';
+import cookieParser from 'cookie-parser';
 
 const PORT = process.env.SERVER_PORT || 9000;
 
@@ -21,6 +22,8 @@ const server = https.Server(serverOpts, app);
 
 //use express JSON handling for request body parsing in controllers
 app.use(express.json());
+
+app.use(cookieParser());
 
 //load custom logging middleware
 winstonLogger.info('using morgan to monitor http requests');

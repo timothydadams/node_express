@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'node:crypto';
 
 export const getFileName = (metaUrl) => {
   const __filename = fileURLToPath(metaUrl);
@@ -20,3 +21,9 @@ export const paginate = ({ page, pageSize }) => {
     limit,
   };
 };
+
+export const generateHash = (str) => {
+  let encoder = new TextEncoder("utf-8");
+  const dataToHash = encoder.encode(str);
+  return crypto.createHash('sha256').update(dataToHash).digest('hex');
+}
