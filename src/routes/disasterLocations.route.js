@@ -1,11 +1,11 @@
 import express from 'express';
 const router = express.Router();
-import * as controller from '../controllers/disasterLocation.controller.js';
-import { authenticationHandler } from '../controllers/authentication.controller.js';
+import * as controller from '../controllers/api/disasterLocation.controller.js';
+import { authenticationHandler } from '../controllers/auth/authentication.controller.js';
 import { verifyJWT } from '../middleware/verifyJWT.js';
 
 /* GET programming languages. */
-router.get('/', controller.getAll);
+router.get('/', verifyJWT, controller.getAll);
 
 /* GET 1 programming language */
 router.get('/:id', controller.getOneByGUID);

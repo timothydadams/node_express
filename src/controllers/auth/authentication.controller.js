@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
-import { generateHash } from '../utils/helper.util.js';
+import { prisma } from '../../configs/db.config.js';
+import { generateHash } from '../../utils/helper.util.js';
 import jwt from 'jsonwebtoken';
-const { sign } = jwt;
 
-const prisma = new PrismaClient();
+const { sign } = jwt;
 
 export const authenticationHandler = async (req, res, next) => {
     const { user, pwd } = req.body;

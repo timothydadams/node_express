@@ -1,4 +1,11 @@
-import { Sequelize } from 'sequelize';
+import { Prisma, PrismaClient } from '@prisma/client'
+
+export const prisma = new PrismaClient();
+
+export default Prisma;
+
+
+/*import { Sequelize } from 'sequelize';
 import winstonLogger from '../middleware/logging.middleware.js';
 
 export const sequelize = new Sequelize(
@@ -18,4 +25,4 @@ export const sequelize = new Sequelize(
             },
         },
     }
-);
+);*/

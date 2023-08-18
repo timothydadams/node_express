@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-//import { generateHash } from '../utils/helper.util.js';
+import { prisma } from '../../configs/db.config.js';
 import jwt from 'jsonwebtoken';
-const { sign, verify } = jwt;
 
-const prisma = new PrismaClient();
+const { sign, verify } = jwt;
 
 export const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;

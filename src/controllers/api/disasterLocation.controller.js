@@ -1,7 +1,5 @@
-import winstonLogger from '../middleware/logging.middleware.js';
-import { Prisma, PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import winstonLogger from '../../middleware/logging.middleware.js';
+import Prisma, { prisma } from '../../configs/db.config.js'
 
 const loggingEnabled = true;
 
@@ -24,10 +22,9 @@ export const getOneByGUID = async (req, res, next) => {
     }
 
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      return res.sendStatus(204);
-    }
-    winstonLogger.error(`Error getting ${req.params.id}`, err.message);
+    //console.log(err)
+    err.message = `invalid id structure (${req.params.id})`
+    //winstonLogger.error(`Error getting ${req.params.id}`, err.message);
     next(err);
   }
 }
@@ -40,14 +37,11 @@ export const getAll = async (req, res, next) => {
 
     if (!disasters) return res.status(400).json({error:{message:"failed to retrieve events"}})
 
-    res.json({
-      disasters,
-      "count":disasters.length,
-    })
+    return res.json({ disasters,"count":disasters.length});
 
   } catch (err) {
-      winstonLogger.error(`Error getting all records`, err.message);
-      next(err);
+    winstonLogger.error(`Error getting all records`, err.message);
+    next(err);
   }
 }
 
@@ -72,6 +66,9 @@ export const create = async (req, res, next) => {
     res.json(disaster)
     
   } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.sendStatus(204);
+    }
     winstonLogger.error(`Error creating record`, err.message);
     next(err);
   }
@@ -99,6 +96,9 @@ export const update = async (req, res, next) => {
     res.json(disaster);
 
   } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.sendStatus(204);
+    }
     winstonLogger.error(`Error updating record`, err.message);
     next(err);
   }
